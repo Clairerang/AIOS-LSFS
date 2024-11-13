@@ -1,7 +1,6 @@
 from .base import BaseVectorDB
 import chromadb
 
-from chromadb.config import Settings
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -33,11 +32,11 @@ class ChromaDB(BaseVectorDB):
         # print(collection_name)
         self.collection = self.client.get_or_create_collection(name=collection_name)
 
-        # if not os.path.exists(os.path.join(mounted_fs_dir, "chroma.sqlite3")):
-        # self.build_database()
+        if self.collection.count() == 0:
+            self.build_index()
 
     # add collection
-    def build_database(self):
+    def build_index(self):
         # for subdir, _, files in os.walk(self.mount_dir):
         for subdir, _, files in os.walk(self.mount_dir):
             for file in files:
@@ -62,7 +61,7 @@ class ChromaDB(BaseVectorDB):
 
         # collection = client.get_or_create_collection(name=collection_name)
 
-        existing_docs = self.collection.get(ids=[file_name])
+        existing_docs = self.collection.get(ids=[file_path])
 
         if existing_docs["ids"]:
             doc_id = existing_docs["ids"]
@@ -75,7 +74,7 @@ class ChromaDB(BaseVectorDB):
             # doc_id = str(uuid.uuid4())
             self.collection.add(
                 documents=[content],
-                ids=[file_name],
+                ids=[file_path],
                 metadatas=[{"file_path": file_path, "file_name": file_name}],
             )
 
@@ -96,8 +95,28 @@ class ChromaDB(BaseVectorDB):
         else:
             print(f"No document found for deleted file: {file_path}")
 
-    def retrieve(self, name, k, keywords):
-        results = self.collection.query(query_texts=[keywords], n_results=int(k))
-        return results
-        # print([doc[:500] for doc in results["documents"][0]])
-        # print(results["metadatas"])
+    def semantic_retrieve(self, name, k, query_text):
+        if name is None:
+            results = self.collection.query(query_texts=[query_text], n_results=int(k))
+            return results
+        else:
+            return self.collection.query(
+                query_texts=[query_text],
+                n_results=int(k),
+                where={"file_name": {"$eq": name}}
+            )
+
+    def keyword_retrive(self, name, k, query_text, keywords):
+        if name is None:
+            return self.collection.query(
+                query_texts=[query_text],
+                n_results=int(k),
+                where_document={"contains": keywords}
+            )
+        else:
+            return self.collection.query(
+                query_texts=[query_text],
+                n_results=int(k),
+                where={"file_name": {"$eq": name}},
+                where_document={"contains": keywords}
+            )

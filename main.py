@@ -1,17 +1,17 @@
 # This is a main script that tests the functionality of specific agents.
 # It requires no user input.
 
-from aios.utils.utils import (
+from kernel.utils.utils import (
     parse_global_args,
 )
 import os
 import warnings
 
-from aios.hooks.llm import useFactory, useKernel, useFIFOScheduler
+from kernel.hooks.llm import useFactory, useKernel, useFIFOScheduler
 
-from aios.utils.utils import delete_directories
+from kernel.utils.utils import delete_directories
 
-from aios.storage.lsfs import LSFS
+from kernel.storage.lsfs import LSFS
 
 from dotenv import load_dotenv
 
@@ -72,8 +72,12 @@ def main():
 
     startScheduler()
     
+    semantic_querys = [
+        
+    ]
+    
     agent_tasks = [
-        ["file_management/retrieve_agent", "Help me find 3 files whose authors are from Rutgers University"]
+        ["file_management/retrieve_agent", "Help me find the files related to machine learning. "]
     ]
     
     for (name, task) in agent_tasks:

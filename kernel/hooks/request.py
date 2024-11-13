@@ -3,7 +3,7 @@ from typing import Mapping
 
 import random
 import time
-from aios.hooks.stores._global import global_llm_req_queue_add_message
+from kernel.hooks.stores._global import global_llm_req_queue_add_message
 
 
 class AgentRequest(Thread):

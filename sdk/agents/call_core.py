@@ -1,8 +1,8 @@
 import time
 from threading import Thread
 
-from aios.hooks.stores._global import global_llm_req_queue_add_message
-from ...aios.hooks.request import AgentProcess
+from kernel.hooks.stores._global import global_llm_req_queue_add_message
+from kernel.hooks.request import AgentProcess
 from ..utils.logger import AgentLogger
 
 

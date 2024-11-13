@@ -40,7 +40,7 @@ class AgentFactory:
     #     return agent_class
     def load_agent_instance(self, agent_name):
         author, name = agent_name.split("/")
-        module_name = ".".join(["pyopenagi", "agents", author, name, "agent"])
+        module_name = ".".join(["sdk", "agents", author, name, "agent"])
         class_name = self.snake_to_camel(name)
 
         agent_module = importlib.import_module(module_name)

@@ -3,13 +3,13 @@
 
 import json
 import re
-from aios.context.simple_context import SimpleContextManager
+from kernel.context.simple_context import SimpleContextManager
 
 # abc allows to make abstract classes
 from abc import ABC, abstractmethod
 
-from aios.utils.logger import LLMKernelLogger
-from aios.utils.id_generator import generator_tool_call_id
+from kernel.utils.logger import LLMKernelLogger
+from kernel.utils.id_generator import generator_tool_call_id
 
 
 class BaseLLM(ABC):

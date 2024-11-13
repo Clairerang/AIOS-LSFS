@@ -1,6 +1,6 @@
 # from aios.storage.db.redis import Redis
 
-from aios.storage.vectordb.chromadb import ChromaDB
+from kernel.storage.vectordb.chromadb import ChromaDB
 
 from watchdog.observers import Observer
 
@@ -12,6 +12,7 @@ from sdk.utils.chat_template import Query
 
 from sdk.utils.chat_template import Response
 
+from sdk.tools.google import google_link
 
 class LSFSSupervisor(FileSystemEventHandler):
     def __init__(self, mount_dir) -> None:
@@ -140,12 +141,16 @@ class LSFSParser:
                                 "default": "3",
                                 "description": "top k files to be retrieved",
                             },
+                            "query_text": {
+                                "type": "string",
+                                "description": "query text used to retrive files",
+                            },
                             "keywords": {
                                 "type": "string",
-                                "description": "keywords used to describe how to locate the files",
-                            },
+                                "description": "keywords must be contained in the doc"
+                            }
                         },
-                        "required": ["k", "keywords"],
+                        "required": ["k", "query_text"]
                     },
                 },
             },
@@ -266,26 +271,32 @@ class LSFS:
         pass
 
     def retrieve_summary(self, params):
-        # print(params)
+        print(params)
         name = params["name"] if "name" in params else None
         k = params["k"] if "k" in params else None
+        query_text = params["query_text"] if "query_text" in params else None
         keywords = params["keywords"] if "keywords" in params else None
-        if k and keywords:
-            results = self.vector_db.retrieve(name, k, keywords)
-            chosen_results = self.choose_result(results)
-            return chosen_results
+        
+        if not keywords:
+            results = self.vector_db.semantic_retrieve(name, k, query_text)
+        else:
+            results = self.vector_db.keyword_retrive(name, k, query_text)
+            
+        chosen_results = self.choose_result(results)
+        return chosen_results
 
     def choose_result(self, results):
         result_list = []
         documents = results["documents"][0]
         metadatas = results["metadatas"][0]
+        
 
         for i, r in enumerate(zip(documents, metadatas)):
             result_list.append(
                 f"{i+1}. "
                 + r[1]["file_path"]
                 + "\n[Part of the file content is]\n "
-                + r[0][:500]
+                + r[0][:1000]
             )
         result_list.append(
             "Choose the file number which is correctly retrived based on your query: "

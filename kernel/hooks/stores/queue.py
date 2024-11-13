@@ -1,4 +1,4 @@
-from aios.hooks.types.llm import LLMRequestQueue
+from kernel.hooks.types.llm import LLMRequestQueue
 
 LLM_REQUEST_QUEUE: dict[str, LLMRequestQueue] = {}
 

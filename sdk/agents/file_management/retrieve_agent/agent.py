@@ -7,7 +7,7 @@ from sdk.utils.chat_template import Query
 
 import json
 
-from aios.hooks.request import send_request
+from kernel.hooks.request import send_request
 
 class RetrieveAgent(BaseAgent):
     def __init__(self, agent_name, task_input, log_mode: str):

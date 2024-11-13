@@ -3,11 +3,11 @@ from concurrent.futures import ThreadPoolExecutor, Future
 from typing import Any
 from random import randint
 
-from aios.llm_core.llms import LLM
+from kernel.llm_core.llms import LLM
 
-from aios.scheduler.fifo_scheduler import FIFOScheduler
+from kernel.scheduler.fifo_scheduler import FIFOScheduler
 
-from aios.hooks.types.llm import (
+from kernel.hooks.types.llm import (
     AgentSubmitDeclaration,
     FactoryParams,
     LLMParams,
@@ -17,21 +17,19 @@ from aios.hooks.types.llm import (
     QueueAddMessage,
     QueueCheckEmpty,
 )
-from aios.hooks.validate import validate
+from kernel.hooks.validate import validate
 
-from aios.hooks.stores import queue as QueueStore, processes as ProcessStore
+from kernel.hooks.stores import queue as QueueStore, processes as ProcessStore
 
-from aios.hooks.utils import generate_random_string
+from kernel.hooks.utils import generate_random_string
 
 from sdk.agents.agent_factory import AgentFactory
 
 ids = []
 
-
 @validate(LLMParams)
 def useKernel(params: LLMParams) -> LLM:
     return LLM(**params.model_dump())
-
 
 def useLLMRequestQueue() -> (
     tuple[LLMRequestQueue, QueueGetMessage, QueueAddMessage, QueueCheckEmpty]
@@ -57,7 +55,7 @@ def useLLMRequestQueue() -> (
 def useFIFOScheduler(params: SchedulerParams):
     if params.get_queue_message is None:
 
-        from aios.hooks.stores._global import global_llm_req_queue_get_message
+        from kernel.hooks.stores._global import global_llm_req_queue_get_message
 
         params.get_queue_message = global_llm_req_queue_get_message
 
