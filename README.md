@@ -16,7 +16,7 @@ pip install -r requirements.txt
 ```
 
 ### Run
-Please make sure you have read the instructions in AIOS to set up the environment and launch the AIOS kernel. 
+Please make sure you have read the instructions in [AIOS](https://github.com/agiresearch/AIOS) to set up the environment and launch the AIOS kernel. 
 
 After that, you can run the following command to start the LSFS terminal.
 
