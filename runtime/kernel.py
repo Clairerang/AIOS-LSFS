@@ -20,6 +20,12 @@ from aios.config.config_manager import config
 
 from cerebrum.llm.communication import LLMQuery
 
+from cerebrum.memory.communication import MemoryQuery
+
+from cerebrum.tool.communication import ToolQuery
+
+from cerebrum.storage.communication import StorageQuery
+
 from fastapi.middleware.cors import CORSMiddleware
 
 # from cerebrum.llm.layer import LLMLayer as LLMConfig
@@ -107,7 +113,7 @@ class AgentSubmit(BaseModel):
 class QueryRequest(BaseModel):
     agent_name: str
     query_type: Literal["llm", "tool", "storage", "memory"]
-    query_data: LLMQuery
+    query_data: LLMQuery | StorageQuery | ToolQuery | MemoryQuery
 
 
 def initialize_components():
@@ -298,9 +304,8 @@ async def setup_agent_factory(config: SchedulerConfig):
             "await": await_agent_execution,
         }
 
-        #print(active_components["llm"].model)
-
         return {"status": "success", "message": "Agent factory initialized"}
+    
     except Exception as e:
         print(f"Agent factory setup failed: {str(e)}")
         raise HTTPException(
@@ -470,6 +475,14 @@ async def handle_query(request: QueryRequest):
                 action_type=request.query_data.action_type,
                 message_return_type=request.query_data.message_return_type,
             )
+            return send_request(request.agent_name, query)
+        elif request.query_type == "storage":
+            query = StorageQuery(
+                messages=request.query_data.messages,
+                operation_type=request.query_data.operation_type
+            )
+            # return send_request(request.agent_name, query)
+            # return {"status": "success", "message": "Storage query received"}
             return send_request(request.agent_name, query)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
