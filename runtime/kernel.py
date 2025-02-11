@@ -1,7 +1,7 @@
 from typing_extensions import Literal
 from fastapi import FastAPI, HTTPException, Request
-from pydantic import BaseModel
-from typing import Optional, Dict, Any
+from pydantic import BaseModel, Field, root_validator
+from typing import Optional, Dict, Any, Union
 from dotenv import load_dotenv
 import traceback
 import json
@@ -110,10 +110,38 @@ class AgentSubmit(BaseModel):
     agent_config: Dict[str, Any]
 
 
+# class QueryRequest(BaseModel):
+#     agent_name: str
+#     query_type: Literal["llm", "tool", "storage", "memory"]
+#     query_data: ToolQuery | StorageQuery | MemoryQuery | LLMQuery 
+
 class QueryRequest(BaseModel):
     agent_name: str
     query_type: Literal["llm", "tool", "storage", "memory"]
-    query_data: LLMQuery | StorageQuery | ToolQuery | MemoryQuery
+    query_data: LLMQuery | ToolQuery | StorageQuery | MemoryQuery
+
+    @root_validator(pre=True)
+    def convert_query_data(cls, values: dict[str, Any]) -> dict[str, Any]:
+        if 'query_type' not in values or 'query_data' not in values:
+            return values
+            
+        query_type = values['query_type']
+        query_data = values['query_data']
+        
+        type_mapping = {
+            'llm': LLMQuery,
+            'tool': ToolQuery,
+            'storage': StorageQuery,
+            'memory': MemoryQuery
+        }
+        
+        if isinstance(query_data, type_mapping[query_type]):
+            return values
+            
+        if isinstance(query_data, dict):
+            values['query_data'] = type_mapping[query_type](**query_data)
+            
+        return values
 
 
 def initialize_components():
