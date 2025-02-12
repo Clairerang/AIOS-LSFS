@@ -1,5 +1,5 @@
 # AIOS-LSFS
-From Commands to Prompts: LLM-based Semantic File System for AIOS
+This is the official code implementation of paper [From Commands to Prompts: LLM-based Semantic File System for AIOS](https://arxiv.org/pdf/2410.11843)
 
 ## 🏠 Architecture of LSFS
 <p align="center">
@@ -18,7 +18,7 @@ pip install -r requirements.txt
 ### 🏃Run
 · Please make sure you have read the instructions in [AIOS](https://github.com/agiresearch/AIOS) to set up the environment and launch the AIOS kernel. 
 
-· You need to create a folder to put the files you want to manage, Our default folder is ```/root```.
+· You need to create a folder to put the files you want to manage, Our default folder is ```./root```.
 
 After that, you can run the following command to start the LSFS terminal.
 
@@ -42,7 +42,7 @@ Then you can start interacting with the LSFS terminal by typing natural language
 The following operations are available on lsfs today, and more will be added in the future:
 | Function Name | Description |
 |-----------------|------------|
-| create semantic file/direct | We manage files through a vector database | 
+| create semantic file/directory | We manage files through a vector database | 
 | keywords/semantic retrieve | We supports multi-keyword search and semantic search function, and semantic search returns the n most desired files |
 | Rollback | Supports file rollback to the previous version of the change.| 
 | Link| Generate shareable links.| 
@@ -65,11 +65,11 @@ If you find this project useful, please cite our paper:
 
 ```
 @inproceedings{
-shi2025from,
-title={From Commands to Prompts: {LLM}-based Semantic File System},
-author={Zeru Shi and Kai Mei and Mingyu Jin and Yongye Su and Chaoji Zuo and Wenyue Hua and Wujiang Xu and Yujie Ren and Zirui Liu and Mengnan Du and Dong Deng and Yongfeng Zhang},
-booktitle={The Thirteenth International Conference on Learning Representations},
-year={2025},
-url={https://openreview.net/forum?id=2G021ZqUEZ}
+  shi2025from,
+  title={From Commands to Prompts: {LLM}-based Semantic File System},
+  author={Zeru Shi and Kai Mei and Mingyu Jin and Yongye Su and Chaoji Zuo and Wenyue Hua and Wujiang Xu and Yujie Ren and Zirui Liu and Mengnan Du and Dong Deng and Yongfeng Zhang},
+  booktitle={The Thirteenth International Conference on Learning Representations},
+  year={2025},
+  url={https://openreview.net/forum?id=2G021ZqUEZ}
 }
 ```
