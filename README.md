@@ -34,7 +34,7 @@ When you successfully enter the system, the interface is as follows:
 ### ❗️Notice
 · After entering the mount file, you need to type ```c``` and ```tab``` in the aios kernel to ensure that the system continues to run
 
-· You need to add your LLM API to ```./aios/config/config.yaml``
+· You need to add your LLM API to ```./aios/config/config.yaml```
 
 Then you can start interacting with the LSFS terminal by typing natural language commands. 
 
