@@ -66,7 +66,7 @@ If you find this project useful, please cite our paper:
 ```
 @inproceedings{
   shi2025from,
-  title={From Commands to Prompts: {LLM}-based Semantic File System},
+  title={From Commands to Prompts: {LLM}-based Semantic File System for AIOS},
   author={Zeru Shi and Kai Mei and Mingyu Jin and Yongye Su and Chaoji Zuo and Wenyue Hua and Wujiang Xu and Yujie Ren and Zirui Liu and Mengnan Du and Dong Deng and Yongfeng Zhang},
   booktitle={The Thirteenth International Conference on Learning Representations},
   year={2025},
