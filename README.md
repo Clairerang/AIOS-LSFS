@@ -16,9 +16,14 @@ pip install -r requirements.txt
 ```
 
 ### 🏃Run
-· Please make sure you have read the instructions in [AIOS](https://github.com/agiresearch/AIOS) to set up the environment and launch the AIOS kernel. 
 
-· You need to create a folder to put the files you want to manage, Our default folder is ```./root```.
+> [!IMPORTANT]
+> Please make sure you have read the instructions in [AIOS](https://github.com/agiresearch/AIOS) to set up the environment and launch the AIOS kernel and set up the configurations in ```aios/config/config.yaml```.
+
+> [!WARNING]
+> The rollback feature of the AIOS terminal requires the connection to the redis server. Make sure you have the redis server running if you would like to use the rollback feature.
+
+· You need to create a folder to put the files you want to manage, which will be mounted as the root directory of LSFS. By default, it is ```./root```.
 
 After that, you can run the following command to start the LSFS terminal.
 
@@ -31,34 +36,25 @@ When you successfully enter the system, the interface is as follows:
 <img src="assets/example.png">
 </p>
 
-### ❗️Notice
-· After entering the mount file, you need to type ```c``` and ```tab``` in the aios kernel to ensure that the system continues to run.
-
-· You need to add your LLM API to ```./aios/config/config.yaml```.
 
 Then you can start interacting with the LSFS terminal by typing natural language commands. 
 
-## 📎 Functions
-The following operations are available on lsfs today, and more will be added in the future:
-| Function Name | Description |
-|-----------------|------------|
-| create semantic file/directory | We manage files through a vector database | 
-| keywords/semantic retrieve | We supports multi-keyword search and semantic search function, and semantic search returns the n most desired files |
-| Rollback | Supports file rollback to the previous version of the change.| 
-| Link| Generate shareable links.| 
-| ......| ......| 
+## 📎 Available Functions
+LSFS currently supports the following operations, with more features planned for future releases:
 
-Please read our paper for a detailed natural language input template.
+| Operation | Description | Example Commands |
+|-----------|-------------|------------------|
+| Mount | Mount a directory as the root folder for LSFS | `mount the /root as the root folder for the LSFS` |
+| Create | Create files or directories with semantic indexing | `create a aios.txt file in the root folder` |
+| Write | Write content to a file | `write 'this is AIOS' into the aios.txt file` |
+| Search | Perform keyword-based or semantic retrieval of files | `search 3 files that are mostly related to Machine Learning` |
+| Rollback | Restore files to previous versions | `rollback the aios.txt to its previous 2 versions` |
+| Share | Generate shareable links for files | `generate a shareable link for the aios.txt` |
 
-## 🖇️ Reuse
-LSFS provides operations and their implementation procedures that inspired by RDBMS and hard to achieve in traditional file system, which can be used for further development of semantic file systems in the future. Here are some examples:
-
-| Function Name | Description |
-|-----------------|------------|
-| Group By | Regroup files containing the same keywords or topics into a new folder. | 
-| Join| Merge the contents of the two files conditionally. | 
-| ......| ...... | 
-
+## APIs
+Please refer to the [Cerebrum (AIOS SDK)](https://github.com/agiresearch/Cerebrum) for more details of the LSFS APIs. 
+- [Traditional file operations](https://github.com/agiresearch/Cerebrum/blob/main/cerebrum/storage/apis.py)
+- [Semantic file operations](https://github.com/agiresearch/Cerebrum/blob/main/cerebrum/llm/apis.py)
 
 ## 🌹Reference
 If you find this project useful, please cite our paper:
