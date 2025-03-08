@@ -1,8 +1,9 @@
 from pydantic import BaseModel
-from typing import Any, TypeAlias, Callable
+from typing import Any, TypeAlias, Callable, List, Dict
 from queue import Queue
 
 LLMRequestQueue: TypeAlias = Queue
+# LLMRequestQueue: TypeAlias = []
 
 LLMRequestQueueGetMessage: TypeAlias = Callable[[], None]
 LLMRequestQueueAddMessage: TypeAlias = Callable[[str], None]
@@ -10,9 +11,6 @@ LLMRequestQueueCheckEmpty: TypeAlias = Callable[[], bool]
 
 
 class LLMParams(BaseModel):
-    llm_name: str
-    max_gpu_memory: dict | None = (None,)
-    eval_device: str | None = (None,)
-    max_new_tokens: int = (256,)
+    llm_configs: List[Dict[str, Any]]
     log_mode: str = ("console",)
-    llm_backend: str | None = None
+    use_context_manager: bool = False

@@ -16,64 +16,14 @@ from pydantic import BaseModel
 from typing import Optional, Dict, Any, List
 from enum import Enum
 
-from cerebrum.client import Cerebrum
 
-from cerebrum.llm.layer import LLMLayer
-from cerebrum.overrides.layer import OverridesLayer
-from cerebrum.storage.layer import StorageLayer
-from cerebrum.memory.layer import MemoryLayer
-from cerebrum.tool.layer import ToolLayer
-
-from cerebrum.llm.communication import LLMQuery
 from cerebrum.config.config_manager import config
-
-from cerebrum.storage.communication import StorageQuery
 
 from list_agents import get_offline_agents, get_online_agents
 
-# class QueryRequest(BaseModel):
-#     agent_name: str
-#     query_type: Literal["llm", "tool", "storage", "memory"]
-#     query_data: LLMQuery | StorageQuery
+from cerebrum.storage.apis import StorageQuery, StorageResponse, mount, retrieve_file, create_file, create_dir, write_file, rollback_file, share_file
 
-# class StorageClient:
-#     def __init__(self, base_url: str = "http://localhost:8000"):
-#         self.base_url = base_url
-#         self.client = self.setup_client()
-#         self.client.connect()
-        
-def setup_client(
-    llm_name: str = "gemini-1.5-flash",
-    llm_backend: str = "google",
-    root_dir: str = None,
-    max_workers: int = None,
-    memory_limit: int = None,
-    aios_kernel_url: str = None
-):
-    # Use config values or override with provided parameters
-    base_url = aios_kernel_url or config.get('kernel', 'base_url')
-    root_dir = root_dir or config.get('client', 'root_dir')
-    max_workers = max_workers or config.get('client', 'max_workers')
-    
-    client = Cerebrum(base_url=base_url)
-    config.global_client = client
-
-    try:
-        client.add_llm_layer(LLMLayer(llm_name=llm_name, llm_backend=llm_backend)) \
-            .add_storage_layer(StorageLayer(root_dir=root_dir)) \
-            .add_memory_layer(MemoryLayer(memory_limit=512)) \
-            .add_tool_layer(ToolLayer()) \
-            .override_scheduler(OverridesLayer(max_workers=1))
-        
-        status = client.get_status()
-        
-        
-        return client
-    
-    except Exception as e:
-        # print(f"❌ Failed to initialize client: {str(e)}")
-        raise
-        
+from cerebrum.llm.apis import LLMQuery, LLMResponse, llm_call_tool, llm_chat, llm_operate_file
 
 class AIOSTerminal:
     def __init__(self):
@@ -110,30 +60,6 @@ class AIOSTerminal:
                 ('class:arrow', ' ≫ ')
             ]
         
-    def _post_mount(self, root_dir):
-        query_data = StorageQuery(
-            params = {"root": root_dir},
-            operation_type="mount"
-        )
-        
-        return self.storage_client._post(
-            "/query",
-            {
-                "agent_name": "terminal",
-                "query_type": "storage",
-                "query_data": query_data.model_dump()
-            }
-        )
-        
-    def _post_semantic_command(self, query: str):
-        query = LLMQuery(
-            messages=[
-                {"role": "user", "content": query}
-            ],
-            action_type="operate_file"
-        )
-        return self.storage_client._query_llm(agent_name="terminal", query=query)
-
     def display_help(self):
         help_table = Table(show_header=True, header_style="bold magenta")
         help_table.add_column("Command", style="cyan")
@@ -185,10 +111,8 @@ class AIOSTerminal:
             else:
                 self.console.print("[red]Invalid input. Please enter 'y' or 'n'.[/red]")
                 
-        self.storage_client = setup_client(root_dir=root_dir)
-        
         # breakpoint()
-        self._post_mount(root_dir)
+        mount(agent_name="terminal", root_dir=root_dir)
         
         mounted_message = Text(f"The semantic file system is mounted at {root_dir}", style="bold cyan")
 
@@ -211,7 +135,9 @@ class AIOSTerminal:
                     self.handle_list_agents(args)
                     continue
                 
-                command_response = self._post_semantic_command(command)
+                command_response = llm_operate_file(
+                    agent_name="terminal", messages=[{"role": "user", "content": command}], tools=[], base_url=config.get('kernel', 'base_url')
+                )
                 command_output = Text(command_response, style="bold green")
                 self.console.print(command_output)
                 
