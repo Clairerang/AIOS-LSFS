@@ -47,7 +47,7 @@ LSFS currently supports the following operations, with more features planned for
 | Mount | Mount a directory as the root folder for LSFS | `mount the /root as the root folder for the LSFS` |
 | Create | Create files or directories with semantic indexing | `create a aios.txt file in the root folder` |
 | Write | Write content to a file | `write 'this is AIOS' into the aios.txt file` |
-| Search | Perform keyword-based or semantic retrieval of files | `search 3 files that are mostly related to Machine Learning` |
+| Search file | Perform keyword-based or semantic search of files | `search 3 files that are mostly related to Machine Learning` |
 | Rollback | Restore files to previous versions | `rollback the aios.txt to its previous 2 versions` |
 | Share | Generate shareable links for files | `generate a shareable link for the aios.txt` |
 
